@@ -13,7 +13,8 @@ IMAGE_DIR = 'IMG/'
 i, x, y = np.loadtxt(DATA_DIR + 'clusterData.csv', unpack = True, delimiter = ',')
 
 plt.figure()
-plt.scatter(x, y, s=3)
+plt.scatter(x, y, s=2)
+plt.scatter(0, 0, s=2, c='r')
 plt.tick_params(direction = 'in', size = 8, top = True, right = True, labelsize=s-2)
 plt.xlim(-sz, sz)
 plt.ylim(-sz, sz)
