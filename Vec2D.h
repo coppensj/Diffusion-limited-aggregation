@@ -38,6 +38,10 @@ template <class Type> class Vec {
             y = v.y/b;
         }
 
+        double DistFrom(const Vec<Type>v){
+            return sqrt(pow(x-v.x,2)+pow((y-v.y),2));
+        }
+
         Type VProd() {
             return (x*y);
         }
