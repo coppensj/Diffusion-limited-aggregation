@@ -1,13 +1,14 @@
 #include <random>
 #include <cmath>
 #include <stdio.h>
+#include <fstream>
 #include "Vec2D.h"
 
 class DLA_2d {
 	//Data
 	private:
 		int L = 300;
-		double particleSize = 1;
+		double particleSize = 3;
 		std::random_device rd;
 		std::mt19937 generator;
 		std::normal_distribution<double> movement;
@@ -16,6 +17,9 @@ class DLA_2d {
         Vec<double> walker;
         vector<Vec<double>> cluster;
         Vec<double> seed;
+        int nParticles = 10000;
+        int clusterSize;
+        std::ofstream clusterData;
 		
 	//Methods
     public:
@@ -24,27 +28,29 @@ class DLA_2d {
             startRadius(0.25*L,0.5*L),
             startAngle(0, 359),
 			generator(std::mt19937(rd())),
-            walker(0,0),
-            seed(0,0){ }
+            seed(1,1){ }
 
         void Initialize(){
            AddNewWalker();          //init random walker
            cluster.push_back(seed); //add seed particle to cluster
+           clusterSize = 1;
         }
 
-        void SingleStep(){
-            for(int i=0; i<10; ++i){
-                printf("%5.2f, %5.2f\n", walker.x, walker.y);
-                printf("%i\n", OutOfBounds());
-                if (OutOfBounds())
-                    printf("Bad\n");
-                else
-                    printf("Good\n");
-                AddNewWalker();
-                //MoveWalker();
-                /* AddToCluster(); */
+        void CreateCluster(){
+            int n=0;
+            while(clusterSize<nParticles){
+                MoveWalker();
+                if(OutOfBounds())
+                    AddNewWalker();
+                else if (TouchingCluster()){
+                    AddToCluster();
+                    AddNewWalker();
+                    ++clusterSize;
+                }
+                if((n++ % 10000000)==0)
+                    printf("%4i cycles, %2i in cluster.\n", n, clusterSize);
             }
-            /* printf("%i\n", int(cluster.size())); */
+            SaveCluster();
         }
 	private:
         //create a new 'walker' particle a large distance from the origin
@@ -70,4 +76,21 @@ class DLA_2d {
             else
                 return 0;
         }
+        
+        int TouchingCluster(){
+            for(int i=0; i<cluster.size(); ++i)
+                if(walker.DistFrom(cluster[i]) <= 2*particleSize)
+                    return 1;
+                else
+                    return 0;
+        }
+
+        void SaveCluster(){
+            clusterData.open("Data/clusterData.csv");
+            for (int i=0; i<cluster.size(); i++) {
+                clusterData << i << "," << cluster[i].x << "," << cluster[i].y << endl;
+            }
+            clusterData.close();
+        }
+
 };
