@@ -8,7 +8,7 @@ class DLA_2d {
 	//Data
 	private:
 		int L = 300;
-		double particleSize = 3;
+		double particleSize = 1;
 		std::random_device rd;
 		std::mt19937 generator;
 		std::normal_distribution<double> movement;
@@ -17,7 +17,7 @@ class DLA_2d {
         Vec<double> walker;
         vector<Vec<double>> cluster;
         Vec<double> seed;
-        int nParticles = 10000;
+        int nParticles = 2000;
         int clusterSize;
         std::ofstream clusterData;
 		
@@ -47,7 +47,7 @@ class DLA_2d {
                     AddNewWalker();
                     ++clusterSize;
                 }
-                if((n++ % 10000000)==0)
+                if((n++ % 1000000)==0)
                     printf("%4i cycles, %2i in cluster.\n", n, clusterSize);
             }
             SaveCluster();
@@ -81,8 +81,7 @@ class DLA_2d {
             for(int i=0; i<cluster.size(); ++i)
                 if(walker.DistFrom(cluster[i]) <= 2*particleSize)
                     return 1;
-                else
-                    return 0;
+            return 0;
         }
 
         void SaveCluster(){
