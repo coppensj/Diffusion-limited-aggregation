@@ -3,6 +3,7 @@
 int main(){
 
     DLA_2d test;
+    test.Initialize();
     test.SingleStep();
 
     return 0;
