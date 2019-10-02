@@ -4,7 +4,7 @@ int main(){
 
     DLA_2d test;
     test.Initialize();
-    test.SingleStep();
+    test.CreateCluster();
 
     return 0;
 }
